@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Titanium
 Bundle-SymbolicName: org.eclipse.titanium;singleton:=true
-Bundle-Version: 7.2.1._20210219-1000
+Bundle-Version: 7.2.1._20210325-1000
 Bundle-Activator: org.eclipse.titanium.Activator
 Bundle-Vendor: Eclipse Titan Project
 Require-Bundle: org.eclipse.ui,

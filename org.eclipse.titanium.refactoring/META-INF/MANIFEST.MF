@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: TitaniumRefactoring
 Bundle-SymbolicName: org.eclipse.titanium.refactoring;singleton:=true
-Bundle-Version: 7.2.1._20210219-1000
+Bundle-Version: 7.2.1._20210325-1000
 Bundle-Activator: org.eclipse.titanium.refactoring.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.jface.text,

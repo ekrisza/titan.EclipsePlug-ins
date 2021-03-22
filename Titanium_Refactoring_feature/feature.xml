@@ -10,7 +10,7 @@
 <feature
       id="Titanium.Refactoring"
       label="Titanium_Refactoring_Feature"
-      version="7.2.1._20210219-1000"
+      version="7.2.1._20210325-1000"
       provider-name="Eclipse Titan Project">
 
    <description url="https://projects.eclipse.org/projects/tools.titan/downloads">
@@ -177,7 +177,7 @@ You may add additional accurate notices of copyright ownership.
          id="org.eclipse.titanium.refactoring"
          download-size="0"
          install-size="0"
-         version="7.2.1._20210219-1000"
+         version="7.2.1._20210325-1000"
          unpack="false"/>
 
 </feature>

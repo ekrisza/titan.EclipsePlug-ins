@@ -4,7 +4,7 @@ Created-By: 23.6-b04 (Oracle Corporation)
 Bundle-ManifestVersion: 2
 Bundle-Name: TITAN_Executor Plug-in
 Bundle-SymbolicName: org.eclipse.titan.executor;singleton:=true
-Bundle-Version: 7.2.1._20210219-1000
+Bundle-Version: 7.2.1._20210325-1000
 Bundle-Activator: org.eclipse.titan.executor.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime;bundle-version="3.5.0",

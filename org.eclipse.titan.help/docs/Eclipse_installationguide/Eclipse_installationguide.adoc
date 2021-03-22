@@ -1,13 +1,13 @@
 ---
 Author: Jenő Balaskó
 Version: 7.2.1
-Date: 2021-02-19
+Date: 2021-03-25
 
 ---
 = Installation Guide for the TITAN Designer and TITAN Executor for the Eclipse IDE
 :author: Jenő Balaskó
 :revnumber: 7.2.1
-:revdate: 2021-02-19
+:revdate: 2021-03-25
 :title-logo-image: images/titan_logo.png
 :sectnums:
 :doctype: book

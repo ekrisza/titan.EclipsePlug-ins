@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Regression_Test_java
 Bundle-SymbolicName: Regression_Test_java;singleton:=true
-Bundle-Version: 7.2.1._20210219-1000
+Bundle-Version: 7.2.1._20210325-1000
 Require-Bundle: org.eclipse.titan.runtime;bundle-version="1.0.0",
  org.antlr.runtime;bundle-version="4.3.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

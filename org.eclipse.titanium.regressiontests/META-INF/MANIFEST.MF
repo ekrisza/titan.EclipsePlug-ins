@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Titanium Regressiontests
 Bundle-SymbolicName: org.eclipse.titanium.regressiontests;singleton:=true
-Bundle-Version: 7.2.1._20210219-1000
+Bundle-Version: 7.2.1._20210325-1000
 Bundle-Vendor: Eclipse Titan Project
 Fragment-Host: org.eclipse.titanium;bundle-version="7.2.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8,
