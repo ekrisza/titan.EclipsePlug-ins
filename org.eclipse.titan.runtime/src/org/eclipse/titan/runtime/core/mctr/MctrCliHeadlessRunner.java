@@ -9,18 +9,15 @@ package org.eclipse.titan.runtime.core.mctr;
 
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
-
-import java.util.Iterator;
 import java.util.Map;
 
-public class MctrCliHeadlessRunner implements IApplication {
+public final class MctrCliHeadlessRunner implements IApplication {
 	
 	private MainController mainController;
-
+	
 	@Override
 	public Object start(IApplicationContext context) throws Exception {
-		Map<Object, Object> arguments = context.getArguments();
-		String[] args = (String[]) arguments.get("application.args");
+		final String[] args = (String[]) context.getArguments().get(IApplicationContext.APPLICATION_ARGS);
 		final Cli userInterface = new Cli();
 		final int max_ptcs = -1;
 
@@ -30,7 +27,7 @@ public class MctrCliHeadlessRunner implements IApplication {
 
 		userInterface.enterLoop(args);
 		
-		return null;
+		return EXIT_OK;
 	}
 
 	@Override
