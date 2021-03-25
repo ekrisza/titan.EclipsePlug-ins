@@ -635,6 +635,9 @@ public final class TTCN3Module extends Module {
 					versionReq.getRequiredModule().getLocation().reportSemanticError(message);
 				} else {
 					final TTCN3Module theImportedModule = (TTCN3Module) theImport.getReferredModule();
+					if (theImportedModule == null) {
+						break;
+					}
 					// make sure the version attribute is parsed (if any)
 					theImportedModule.check(timestamp);
 					final ProductIdentity requiredVersion = versionReq.getVersionNumber();
