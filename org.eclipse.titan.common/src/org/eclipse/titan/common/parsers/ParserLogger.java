@@ -55,7 +55,7 @@ public final class ParserLogger {
 	 * @param aPrinter printer
 	 * @param aDescription description of the parsing type, for the logging (for example: TTCN-3, Cfg, ASN.1)
 	 */
-	public static void log( final ParseTree aRoot,
+	public static synchronized void log( final ParseTree aRoot,
 			final Parser aParser,
 			final TokenNameResolver aTokenNameResolver,
 			final IPrinter aPrinter,
