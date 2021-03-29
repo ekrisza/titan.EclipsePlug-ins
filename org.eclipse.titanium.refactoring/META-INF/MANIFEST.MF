@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: TitaniumRefactoring
 Bundle-SymbolicName: org.eclipse.titanium.refactoring;singleton:=true
-Bundle-Version: 7.2.1._20210325-1000
+Bundle-Version: 7.2.2._20210329-1000
 Bundle-Activator: org.eclipse.titanium.refactoring.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.jface.text,
@@ -16,8 +16,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.forms,
  org.eclipse.core.filesystem,
  org.eclipse.core.resources,
- org.eclipse.titan.common;bundle-version="7.2.1",
- org.eclipse.titan.designer;bundle-version="7.2.1"
+ org.eclipse.titan.common;bundle-version="7.2.2",
+ org.eclipse.titan.designer;bundle-version="7.2.2"
 Bundle-ActivationPolicy: lazy
 Eclipse-LazyStart: true
 Bundle-ClassPath: .

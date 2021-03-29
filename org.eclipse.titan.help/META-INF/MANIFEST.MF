@@ -4,6 +4,6 @@ Created-By: 23.6-b04 (Oracle Corporation)
 Bundle-ManifestVersion: 2
 Bundle-Name: TITAN_Help Plug-in
 Bundle-SymbolicName: org.eclipse.titan.help;singleton:=true
-Bundle-Version: 7.2.1._20210325-1000
+Bundle-Version: 7.2.2._20210329-1000
 Bundle-Vendor: Eclipse Titan Project
 

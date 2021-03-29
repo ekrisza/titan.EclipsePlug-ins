@@ -37,10 +37,10 @@ import org.eclipse.titan.runtime.core.TitanVerdictType.VerdictTypeEnum;
 public final class TTCN_Runtime {
 	public static final int TTCN3_MAJOR = 7;
 	public static final int TTCN3_MINOR = 2;
-	public static final int TTCN3_PATCHLEVEL = 1;
+	public static final int TTCN3_PATCHLEVEL = 2;
 	public static final int TTCN3_BUILDNUMBER = 0;
 
-	public static final String VERSION_STRING = "7.2.1";
+	public static final String VERSION_STRING = "7.2.2";
 	public static final String PRODUCT_NUMBER = VERSION_STRING;
 
 	public enum executorStateEnum {
