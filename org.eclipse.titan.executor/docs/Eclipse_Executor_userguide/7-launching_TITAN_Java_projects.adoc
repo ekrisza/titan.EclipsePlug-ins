@@ -76,11 +76,13 @@ Sometimes Eclipse automatically switches to one of the additionally created laun
 
 The functionality of other tab pages of the TITAN Native Java launch configuration matches the ones for JNI launch mode, see <<creating-launch-configuration,Creating Launch Configuration>>.
 
-=== Executing TITAN Java project via exported jar files.
+=== Executing TITAN Java project via exported JAR files
 
-==== Exporting the JAR files.
+This subsection describes how to export a TITAN Java project into a JAR file and how to set up the automatic JAR export for the project. Finally, the execution of the project via CLI is presented.
 
-It is possible to export TITAN Java projects into a single jar file and use them as executables.
+==== Exporting TITAN Java project into JAR file using wizard
+
+It is possible to export TITAN Java project into a single JAR file and use it as executables. This feature is provided by the in-built *Runnable JAR file* export wizard of the Eclipse IDE.
 
 To export a .jar file from a TITAN Java project:
 
@@ -100,44 +102,102 @@ image::images/7_F47.png[title="Export wizard for JAR file"]
 +
 The following options are available:
 
-* *Launch Configuration*: select the launch configuration that configures the execution for this jar file. This will set the class to be used for execution.
+* *Launch Configuration*: select the launch configuration that configures the execution for this JAR file. This will set the class to be used for execution, i.e. the main class defined by the selected launch configuration will be the default entry point of the exported JAR file.
+
+NOTE: Only launch configurations of Java application type are available for selection here. If such configuration is not created previously, you have to create one to continue.
 
 * *Export destination*: select the file into which the export should be done.
 
-* *Library handling*: It is possible to configure how the libraries are handled in the resulting jar. We recommend selecting the *Package required libraries into generated JAR*
+* *Library handling*: It is possible to configure how the libraries are handled in the resulting jar. We recommend selecting the *Package required libraries into generated JAR*.
 
 5. Select *Finish*.
 
+==== Automated exporting TITAN Java project into JAR file
+
+In most cases, the manual JAR export using the Runnable JAR file export wizard is sufficient. However, in certain use case it is more convenient to automate this procedure especially when working with relatively small projects that content is often modified and JAR export is needed.
+
+To turn on the automated JAR export, first navigate to the project properties page:
+
+1. Select the project in the navigator/project explorer view.
+
+2. In the right click menu, select *Properties*.
+
+Then, the default target has to be set and the path of the JAR file has to be specified:
+
+1. In the left tab, select *TITAN Project Property (Java)*.
+
+2. Select *Java target creation attributes* tab.
+
+3. Select *Executable JAR* from the drop-down list as the default target.
+
+4. Specify the path of the JAR file in the text box.
+
+5. Finally, apply the new settings.
+
+[[Figure-7-automated_jar_export]]
+image::images/7_automated_jar_export.png[title="Turning on automated JAR export"]
+
+As a result, 'jarbuild.xml' ANT build script will appear in the project's root and a new ANT builder is specified for the project.
+To build the JAR file, the project has to be built as usual (Right click on the project/Build Project).
+At the end of the build process, the ANT will create the executable JAR according to the 'jarbuild.xml'.
+
+[NOTE]
+====
+If there is no change in the project, the build process will not start (even if the executable JAR file does not exist).
+
+The automated JAR build procedure can be customized on demand. The generated ANT build script describes the JAR building attributes. While the newly added ANT builder automatically executes this ANT build script.
+====
+
+To turn off the automated JAR export, just set the default target to *Class files*. 
+
 ==== Executing with JAR files in single mode
 
-The Java side of the TITAN Test Executor, in the case of the exported jar files, follows the same procedures as the C side does described in the User Guide for TITAN TTCN-3 Test Executor<<8-references.adoc#_3, [3]>>.
-With differences related to executing Java files.
+The Java side of the TITAN Test Executor, in the case of the exported JAR files, follows the same procedures as the C side does described in the User Guide for TITAN TTCN-3 Test Executor<<8-references.adoc#_3, [3]>>.
+However, there are some differences related to executing JAR files. The executable JAR file contains the host controller for both in single and parallel mode.
 
 For example executing a generated executable, in single mode, on the C side:
 [source]
 ----
-./regressionTestSmall.exe minimal1.cfg
+./helloWorld.exe config.cfg
 ----
 
-Executing an exported jar file, in single mode, on the Java side:
+Executing an exported JAR file, in single mode, on the Java side, use the following command:
 [source]
 ----
-java -jar regressionTestSmall.jar minimal1.cfg
+java -jar jar_file.jar config_file.cfg
 ----
+For example:
+[source]
+----
+java -jar helloWorld.jar config.cfg
+----
+
+If the parallel execution mode is specified as the default entry point of the executable JAR, the following command should be used:
+[source]
+----
+java -cp jar_file.jar org.eclipse.titan.{name of project}.generated.Single_main config_file.cfg
+----
+For example:
+[source]
+----
+java -cp helloWorld.jar org.eclipse.titan.helloWorld.generated.Single_main config.cfg
+----
+
+NOTE: During the JAR export process, the selected launch configuration determines the default entry point of the executable JAR file, i.e. either single or parallel execution mode will be started by the 'java -jar' command.
 
 ==== Executing with JAR files in parallel mode
 
-The Java side of the TITAN Test Executor, in the case of the exported jar files, follows the same procedures as the C side does described in the User Guide for TITAN TTCN-3 Test Executor<<8-references.adoc#_3, [3]>>.
+The Java side of the TITAN Test Executor, in the case of the exported JAR files, follows the same procedures as the C side does described in the User Guide for TITAN TTCN-3 Test Executor<<8-references.adoc#_3, [3]>>.
 With differences related to executing Java files.
 
 To execute test suites in parallel mode first the Main Controller needs to be started:
 [source]
 ----
-$ ./mctr_cli.exe Perf2.cfg
+$ ./mctr_cli.exe config.cfg
 
 *************************************************************************
 * TTCN-3 Test Executor - Main Controller 2                              *
-* Version: 7/CAX 105 7730 R2A                                           *
+* Version: 7.2.1                                           *
 * Copyright (c) 2000-2021 Ericsson Telecom AB                           *
 * All rights reserved. This program and the accompanying materials      *
 * are made available under the terms of the Eclipse Public License v2.0 *
@@ -145,7 +205,7 @@ $ ./mctr_cli.exe Perf2.cfg
 * https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.html            *
 *************************************************************************
 
-Using configuration file: Perf2.cfg
+Using configuration file: config.cfg
 MC@HU-00000227: Listening on TCP port 7339.
 MC2>
 ----
@@ -155,14 +215,43 @@ It will tell us, that it accepts connections on the localhost machine, on the po
 To connect to it, in parallel mode, on the C side:
 [source]
 ----
-./regressionTestSmall.exe localhost 7339
+./helloWorld.exe localhost 7339
 ----
 
-Executing an exported jar file, in single mode, on the Java side:
+Executing an exported JAR file, in parallel mode, on the Java side:
 [source]
 ----
-java -jar regressionTestSmall.jar localhost 7339
+java -jar jar_file.jar mctr_ip mctr_port
 ----
+For example:
+[source]
+----
+java -jar helloWorld.jar localhost 7339
+----
+
+If the single execution mode is specified as the default entry point of the executable JAR, the following command should be used:
+[source]
+----
+java -cp jar_file.jar org.eclipse.titan.{name of project}.generated.Parallel_main mctr_ip mctr_port
+----
+For example:
+[source]
+----
+java -cp helloWorld.jar org.eclipse.titan.helloWorld.generated.Parallel_main localhost 7339
+----
+
+[NOTE]
+====
+The automated JAR export feature builds JAR files in parallel execution mode by default.
+
+Alternatively, the Java based host controller can be started using the 'ttcn3_start' script in parallel mode.
+It works the same way as starting an executable generated by the C side of the TITAN Test Executor.
+For example:
+[source]
+----
+./ttcn3_start helloWorld.jar config.cfg
+----
+====
 
 ==== Tips
 
@@ -170,5 +259,5 @@ It is possible to provide Java VM arguments when executing exported jar files.
 For example:
 [source]
 ----
-java -Xmx1024m -jar regressionTestSmall.jar minimal1.cfg
+java -Xmx1024m -jar helloWorld.jar config.cfg
 ----
