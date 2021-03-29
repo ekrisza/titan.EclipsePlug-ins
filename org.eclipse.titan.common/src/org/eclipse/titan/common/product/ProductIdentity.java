@@ -20,7 +20,7 @@ public final class ProductIdentity implements Comparable<ProductIdentity> {
 	public static final String TITAN_PRODUCT_NUMBER_CNL = "CNL 113 200";
 	public static final int TITAN_VERSION_MAJOR = 7;
 	public static final int TITAN_VERSION_MINOR = 2;
-	public static final int TITAN_VERSION_PATCHLEVEL = 1;
+	public static final int TITAN_VERSION_PATCHLEVEL = 2;
 
 	private String productNumber = null;
 	private int productNumberSuffix = 1;

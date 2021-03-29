@@ -67,9 +67,7 @@ public final class TITANPathUtilities {
 	 * @return the resolved uri or null on error.
 	 */
 	public static URI resolvePath(final String pathToBeResolved, final URI basePath) {
-		final String basePathString = URIUtil.toPath(basePath).toOSString();
-		return resolvePathURI(pathToBeResolved, basePathString);
-
+		return resolvePathURI(pathToBeResolved, basePath == null ? null : URIUtil.toPath(basePath).toOSString());
 	}
 
 	/**
