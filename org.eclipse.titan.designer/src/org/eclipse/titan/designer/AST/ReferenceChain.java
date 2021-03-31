@@ -158,7 +158,11 @@ public final class ReferenceChain implements IReferenceChain {
 			return;
 		}
 
-		final int markedLimit = markedStates.pollLast().intValue();
+		final Integer polled = markedStates.pollLast();
+		if (polled == null) {
+			return;
+		}
+		final int markedLimit = polled.intValue();
 		for (int i = chainLinks.size() - 1; i >= markedLimit; i--) {
 			chainLinks.remove(i);
 		}
