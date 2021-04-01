@@ -44,6 +44,7 @@
     <target depends="clean" name="cleanall"/>
 
 	<target name="build.jars" depends="build">
+		<copy file="plugin.xml" todir="bin" />
 		<mkdir dir="${result.dir}/plugins"/>
 		<update.manifest file="${build.dir}/${runtime.name}/META-INF/MANIFEST.MF"/>
 		<jar destfile="${result.dir}/plugins/org.eclipse.titan.runtime_${version.qualifier}.jar"
