@@ -44,7 +44,6 @@ import org.eclipse.titan.common.utils.CommentUtils;
 import org.eclipse.titan.common.utils.FileUtils;
 import org.eclipse.titan.common.utils.StringUtils;
 import org.eclipse.titan.designer.GeneralConstants;
-import org.eclipse.titan.designer.compiler.ProjectSourceCompiler;
 import org.eclipse.titan.designer.core.JavaRuntimeHelper;
 import org.eclipse.titan.designer.properties.data.MakefileCreationData;
 import org.eclipse.titan.designer.properties.data.ProjectBuildPropertyData;
@@ -60,6 +59,7 @@ import org.w3c.dom.Node;
 public final class AntScriptGenerator {
 	public static final String BUILD_XML_NAME = "jarbuild.xml";
 	private static final String BUILD_TARGET = "jar";
+	private static final String	MCTR_CLI_MAIN = "org.eclipse.titan.runtime.core.mctr.CliMain";
 	private static final String REQUIRED_ANT_VERSION_TEXT = "ANT 1.7 is required";
 	private static final String INDENT_SPACES = "    ";
 	private static final String DOUBLE_INDENT_SPACES = INDENT_SPACES + INDENT_SPACES;
@@ -257,7 +257,7 @@ public final class AntScriptGenerator {
 
 		property = document.createElement("property");
 		property.setAttribute("name", "main-class");
-		property.setAttribute("value", ProjectSourceCompiler.getPackageGeneratedRoot(project) + ".Parallel_main");
+		property.setAttribute("value", MCTR_CLI_MAIN);
 		projectElement.appendChild(property);
 
 		Element target = document.createElement("target");
