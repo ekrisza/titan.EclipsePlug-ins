@@ -44,6 +44,7 @@ import org.eclipse.titan.common.utils.CommentUtils;
 import org.eclipse.titan.common.utils.FileUtils;
 import org.eclipse.titan.common.utils.StringUtils;
 import org.eclipse.titan.designer.GeneralConstants;
+import org.eclipse.titan.designer.compiler.ProjectSourceCompiler;
 import org.eclipse.titan.designer.core.JavaRuntimeHelper;
 import org.eclipse.titan.designer.properties.data.MakefileCreationData;
 import org.eclipse.titan.designer.properties.data.ProjectBuildPropertyData;
@@ -71,6 +72,14 @@ public final class AntScriptGenerator {
 	private static final String CURRENT_DIR = "./";
 	/** @see org.eclipse.jdt.internal.ui.jarpackagerfat.JIJConstants */
 	private static final String LOADER_MAIN_CLASS = "org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader";
+	
+	public enum PackageType {
+		EXTRACT, PACKAGE;
+		
+		public static PackageType getDefault() {
+			return EXTRACT;
+		}
+	}
 
 	/** @see org.eclipse.jdt.internal.ui.jarpackagerfat.FatJarAntExporter */
 	private static class SourceInfo {
@@ -154,6 +163,18 @@ public final class AntScriptGenerator {
 	 * @return {@code true} if the generation was completed or {@code false} if error occurred during the process
 	 */
 	public static boolean generateAndStoreBuildXML(final IProject project, final boolean isUpdated) {
+		return generateAndStoreBuildXML(project, isUpdated, PackageType.getDefault());
+	}
+
+	/**
+	 * Creates and then stores the {@code jarbuild.xml} ANT script for the specified project's root 
+	 * @param project Project where the ANT script is required
+	 * @param isUpdated Whether the file path was modified on the UI
+	 * @param pt Whether the class files are extracted and re-packed from JAR dependencies or 
+	 * 			 JAR dependencies included in the generated JAR as they are
+	 * @return {@code true} if the generation was completed or {@code false} if error occurred during the process
+	 */
+	public static boolean generateAndStoreBuildXML(final IProject project, final boolean isUpdated, final PackageType pt) {
 		if (project == null) {
 			return false;
 		}
@@ -161,12 +182,18 @@ public final class AntScriptGenerator {
 			return true;
 		}
 		try {
-			final Document content = generateBuildXML(project);
+			final Document content = generateBuildXML(project, pt);
 			if (content == null) {
 				return false;
 			}
 			storeBuildXML(project, content);
-			copyJarInJarLoader(project);
+			switch (pt) {
+			case PACKAGE:
+				copyJarInJarLoader(project);
+				break;
+			default:
+				break;
+			}
 		} catch (CoreException e) {
 			ErrorReporter.logExceptionStackTrace(e);
 			return false;
@@ -180,11 +207,13 @@ public final class AntScriptGenerator {
 	/**
 	 * Generates the {@code jarbuild.xml} ANT script for the specified project
 	 * @param project Project where the ANT script is required
+	 * @param pt Whether the class files are extracted and re-packed from JAR dependencies or 
+	 * 			 JAR dependencies included in the generated JAR as they are
 	 * @return DOM document containing the ANT script 
 	 * @throws CoreException
 	 * @see org.eclipse.jdt.internal.ui.jarpackagerfat.FatJarRsrcUrlAntExporter#buildANTScript
 	 */
-	public static Document generateBuildXML(final IProject project) throws CoreException {
+	public static Document generateBuildXML(final IProject project, final PackageType pt) throws CoreException {
 		if (project == null) {
 			return null;
 		}
@@ -257,7 +286,7 @@ public final class AntScriptGenerator {
 
 		property = document.createElement("property");
 		property.setAttribute("name", "main-class");
-		property.setAttribute("value", MCTR_CLI_MAIN);
+		property.setAttribute("value", ProjectSourceCompiler.getPackageGeneratedRoot(project) + ".Parallel_main");
 		projectElement.appendChild(property);
 
 		Element target = document.createElement("target");
@@ -278,6 +307,13 @@ public final class AntScriptGenerator {
 		final String parametrizedJarString = "${dir.jar}/" + jarFileName;
 		Element jar = document.createElement("jar");
 		jar.setAttribute("destfile", parametrizedJarString);
+		switch (pt) {
+		case EXTRACT:
+			jar.setAttribute("filesetmanifest", "mergewithoutmain");
+			break;
+		default:
+			break;
+		}
 		target.appendChild(jar);
 
 		Element manifest = document.createElement("manifest");
@@ -285,42 +321,72 @@ public final class AntScriptGenerator {
 
 		Element attribute = document.createElement("attribute");
 		attribute.setAttribute("name", "Main-Class");
-		attribute.setAttribute("value", LOADER_MAIN_CLASS);
+		switch (pt) {
+		case EXTRACT:
+			attribute.setAttribute("value", "${main-class}");
+			break;
+		case PACKAGE:
+			attribute.setAttribute("value", LOADER_MAIN_CLASS);
+			break;
+		default:
+			break;
+		}
 		manifest.appendChild(attribute);
 
-		attribute = document.createElement("attribute");
-		attribute.setAttribute("name", REDIRECTED_MAIN_CLASS_MANIFEST_NAME);
-		attribute.setAttribute("value", "${main-class}");
-		manifest.appendChild(attribute);
+		switch (pt) {
+		case PACKAGE:
+			attribute = document.createElement("attribute");
+			attribute.setAttribute("name", REDIRECTED_MAIN_CLASS_MANIFEST_NAME);
+			attribute.setAttribute("value", "${main-class}");
+			manifest.appendChild(attribute);
+			attribute = document.createElement("attribute");
+			attribute.setAttribute("name", REDIRECTED_CLASS_PATH_MANIFEST_NAME);
+			StringBuilder rsrcClassPath= new StringBuilder();
+			rsrcClassPath.append(CURRENT_DIR);
+			for (SourceInfo sourceInfo : sourceInfos) {
+				if (sourceInfo.isJar) {
+					rsrcClassPath.append(" ").append(new File(sourceInfo.absPath).getName());
+				}
+			}
+			attribute.setAttribute("value", rsrcClassPath.toString());
+			manifest.appendChild(attribute);
+			break;
+		default:
+			break;
+		}
 
 		attribute = document.createElement("attribute");
 		attribute.setAttribute("name", "Class-Path");
 		attribute.setAttribute("value", ".");
 		manifest.appendChild(attribute);
 
-		attribute = document.createElement("attribute");
-		attribute.setAttribute("name", REDIRECTED_CLASS_PATH_MANIFEST_NAME);
-		StringBuilder rsrcClassPath= new StringBuilder();
-		rsrcClassPath.append(CURRENT_DIR);
-		for (SourceInfo sourceInfo : sourceInfos) {
-			if (sourceInfo.isJar) {
-				rsrcClassPath.append(" ").append(new File(sourceInfo.absPath).getName());
-			}
+		switch (pt) {
+		case PACKAGE:
+			Element zipfileset = document.createElement("zipfileset");
+			zipfileset.setAttribute("src", GeneralConstants.JAVA_TEMP_DIR + "/" + FatJarRsrcUrlBuilder.JAR_RSRC_LOADER_ZIP);
+			jar.appendChild(zipfileset);
+			break;
+		default:
+			break;
 		}
-		attribute.setAttribute("value", rsrcClassPath.toString());
-		manifest.appendChild(attribute);
-
-		Element zipfileset = document.createElement("zipfileset");
-		zipfileset.setAttribute("src", GeneralConstants.JAVA_TEMP_DIR + "/" + FatJarRsrcUrlBuilder.JAR_RSRC_LOADER_ZIP);
-		jar.appendChild(zipfileset);
 
 		for (SourceInfo sourceInfo : sourceInfos) {
 			if (sourceInfo.isJar) {
 				final File sourceJarFile = new File(sourceInfo.absPath);
 				final String relPath = PathUtil.getRelativePath(project.getLocation().toOSString(), sourceJarFile.getParent()).replace("\\", "/");
 				Element fileset = document.createElement("zipfileset");
-				fileset.setAttribute("dir", relPath);
-				fileset.setAttribute("includes", sourceJarFile.getName());
+				switch (pt) {
+				case EXTRACT:
+					fileset.setAttribute("src", relPath + "/" +sourceJarFile.getName());
+					fileset.setAttribute("excludes", "META-INF/*.SF");
+					break;
+				case PACKAGE:
+					fileset.setAttribute("dir", relPath);
+					fileset.setAttribute("includes", sourceJarFile.getName());
+					break;
+				default:
+					break;
+				}
 				jar.appendChild(fileset);
 			} else {
 				Element fileset = document.createElement("fileset");

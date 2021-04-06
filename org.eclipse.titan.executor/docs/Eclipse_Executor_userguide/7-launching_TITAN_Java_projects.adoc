@@ -108,7 +108,7 @@ NOTE: Only launch configurations of Java application type are available for sele
 
 * *Export destination*: select the file into which the export should be done.
 
-* *Library handling*: It is possible to configure how the libraries are handled in the resulting jar. We recommend selecting the *Package required libraries into generated JAR*.
+* *Library handling*: It is possible to configure how the libraries are handled in the resulting jar. We recommend selecting the *Extract required libraries into generated JAR*.
 
 5. Select *Finish*.
 
