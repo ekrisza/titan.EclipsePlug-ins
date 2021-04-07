@@ -1,3 +1,7 @@
+# !!!NOTE TO ALL USERS!!!
+
+This repository will migrate to the Eclipse Foundation GitLab (https://gitlab.eclipse.org, the exact repository access will be communicated later) on the 20th April 2021.
+
 # titan.EclipsePlug-ins
 
 The Titan Eclipse plug-ins offer a TTCN-3 IDE for the Titan Execution environment.
