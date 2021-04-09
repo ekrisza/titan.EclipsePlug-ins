@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.titan.common.logging.ErrorReporter;
+import org.eclipse.titan.designer.core.TITANJavaBuilder;
 import org.eclipse.titan.designer.preferences.PreferenceConstants;
 import org.eclipse.titan.designer.preferences.pages.ExportOptionsPage;
 import org.eclipse.titan.designer.productUtilities.ProductConstants;
@@ -83,6 +84,10 @@ public final class TITANAutomaticProjectExporter {
 		}
 
 		if (!automaticExportRequested()) {
+			return false;
+		}
+		
+		if (TITANJavaBuilder.isBuilderEnabled(project)) {
 			return false;
 		}
 

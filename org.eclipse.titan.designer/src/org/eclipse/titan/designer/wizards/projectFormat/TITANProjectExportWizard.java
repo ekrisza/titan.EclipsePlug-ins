@@ -23,9 +23,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.titan.common.logging.ErrorReporter;
 import org.eclipse.titan.common.path.TITANPathUtilities;
+import org.eclipse.titan.designer.core.TITANJavaBuilder;
 import org.eclipse.titan.designer.properties.data.ProjectBuildPropertyData;
 import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
@@ -38,6 +40,7 @@ public class TITANProjectExportWizard extends Wizard implements IExportWizard {
 	private static final String NEWPROJECT_WINDOWTITLE = "Export TITAN Project to a TITAN Project descriptor file";
 	private static final String NEWPROJECT_TITLE = "Create a TITAN Project Descriptor File";
 	private static final String NEWPROJECT_DESCRIPTION = "Create a TITAN Project Descriptor (tpd) file in the workspace or in an external location";
+	private static final String TITAN_JAVA_PROJECT_ERROR_MESSAGE = "TPD export of Titan Java projects are not supported!";
 
 	private IStructuredSelection selection;
 	private IProject project = null;
@@ -144,6 +147,22 @@ public class TITANProjectExportWizard extends Wizard implements IExportWizard {
 		optionsPage = new TITANProjectExportOptionsPage(useTpdName);
 
 		addPage(optionsPage);
+	}
+
+	@Override
+	public boolean canFinish() {
+		if (project == null || TITANJavaBuilder.isBuilderEnabled(project)) {
+			mainPage.setErrorMessage(TITAN_JAVA_PROJECT_ERROR_MESSAGE);
+			optionsPage.setErrorMessage(TITAN_JAVA_PROJECT_ERROR_MESSAGE);
+			return false;
+		}
+		
+		for (IWizardPage page : getPages()) {
+			if (!page.isPageComplete()) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Override
