@@ -175,7 +175,7 @@ public final class LinkedLaunchConfigurationChangeListener implements ILaunchCon
 	 * @throws CoreException
 	 */
 	private boolean equalsProject(final ILaunchConfiguration config1, final ILaunchConfiguration config2) throws CoreException {
-		if (config1 == null && config2 == null) {
+		if (config1 == null || config2 == null) {
 			return false;
 		}
 		final IResource[] resources1 = config1.getMappedResources();
