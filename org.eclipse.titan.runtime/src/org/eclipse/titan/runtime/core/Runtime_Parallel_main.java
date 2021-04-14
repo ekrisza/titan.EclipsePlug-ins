@@ -44,7 +44,7 @@ public final class Runtime_Parallel_main {
 
 		try {
 			final int MC_port = Integer.parseInt(argv[1]);
-			if (MC_port < 0 && MC_port > 65536) {
+			if (MC_port < 0 || MC_port > 65536) {
 				throw new NumberFormatException();
 			}
 
